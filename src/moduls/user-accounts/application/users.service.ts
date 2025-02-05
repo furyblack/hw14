@@ -4,6 +4,9 @@ import { User, UserModelType } from '../domain/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
 import bcrypt from 'bcrypt';
 import { UsersRepository } from '../infrastructure/users.repository';
+import { Types } from 'mongoose';
+import { EmailService } from '../../notifications/email.service';
+import { CryptoService } from './crypto.service';
 
 @Injectable()
 export class UsersService {
@@ -12,6 +15,8 @@ export class UsersService {
     @InjectModel(User.name)
     private UserModel: UserModelType,
     private usersRepository: UsersRepository,
+    private emailService: EmailService,
+    private cryptoService: CryptoService,
   ) {}
   async createUser(dto: CreateUserDto): Promise<string> {
     //TODO: move to brypt service
@@ -39,10 +44,28 @@ export class UsersService {
   // }
 
   async deleteUser(id: string) {
-    const user = await this.usersRepository.findOrNotFoundFail(id);
+    const user = await this.usersRepository.findOrNotFoundFail(
+      new Types.ObjectId(id),
+    );
 
     user.makeDeleted();
 
     await this.usersRepository.save(user);
+  }
+  async registerUser(dto: CreateUserDto) {
+    const createdUserId = await this.createUser(dto);
+
+    const confirmCode = 'uuid';
+
+    const user = await this.usersRepository.findOrNotFoundFail(
+      new Types.ObjectId(createdUserId),
+    );
+
+    user.setConfirmationCode(confirmCode);
+    await this.usersRepository.save(user);
+
+    this.emailService
+      .sendConfirmationEmail(user.email, confirmCode)
+      .catch(console.error);
   }
 }
