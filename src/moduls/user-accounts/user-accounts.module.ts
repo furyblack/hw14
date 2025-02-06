@@ -13,6 +13,8 @@ import { LocalStrategy } from './guards/local/local.strategy';
 import { CryptoService } from './application/crypto.service';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthController } from './api/auth.controller';
+import { SecurityDevicesController } from './api/security-devices.controller';
 
 @Module({
   imports: [
@@ -28,7 +30,7 @@ import { JwtModule } from '@nestjs/jwt';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     NotificationsModule,
   ],
-  controllers: [UsersController],
+  controllers: [UsersController, AuthController, SecurityDevicesController],
   providers: [
     UsersService,
     UsersRepository,

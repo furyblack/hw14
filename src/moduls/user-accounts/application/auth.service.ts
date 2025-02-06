@@ -32,4 +32,12 @@ export class AuthService {
 
     return { id: user.id.toString() };
   }
+
+  async login(userId: string) {
+    const accessToken = this.jwtService.sign({ id: userId } as UserContextDto);
+
+    return {
+      accessToken,
+    };
+  }
 }
