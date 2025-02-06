@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserModelType } from '../domain/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
-import bcrypt from 'bcrypt';
 import { UsersRepository } from '../infrastructure/users.repository';
 import { Types } from 'mongoose';
 import { EmailService } from '../../notifications/email.service';
 import { CryptoService } from './crypto.service';
+import { BadRequestDomainException } from '../../../core/exceptions/domain-exceptions';
 
 @Injectable()
 export class UsersService {
@@ -18,9 +18,18 @@ export class UsersService {
     private emailService: EmailService,
     private cryptoService: CryptoService,
   ) {}
-  async createUser(dto: CreateUserDto): Promise<string> {
-    //TODO: move to brypt service
-    const passwordHash = await bcrypt.hash(dto.password, 10);
+  async createUser(dto: CreateUserDto) {
+    const userWithTheSameLogin = await this.usersRepository.findByLogin(
+      dto.login,
+    );
+    if (!!userWithTheSameLogin) {
+      throw BadRequestDomainException.create(
+        'User with the same login already exists',
+      );
+    }
+    const passwordHash = await this.cryptoService.createPasswordHash(
+      dto.password,
+    );
 
     const user = this.UserModel.createInstance({
       email: dto.email,
@@ -30,7 +39,7 @@ export class UsersService {
 
     await this.usersRepository.save(user);
 
-    return user._id.toString();
+    return user._id;
   }
 
   // async updateUser(id: string, dto: UpdateUserDto): Promise<string> {
