@@ -47,7 +47,7 @@ export class AuthController {
   //     },
   //   },
   // })
-  login(
+  async login(
     /*@Request() req: any*/
     @ExtractUserFromRequest() user: UserContextDto,
   ): Promise<{ accessToken: string }> {
