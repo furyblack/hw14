@@ -37,6 +37,9 @@ export class UsersRepository {
   findByLogin(login: string): Promise<UserDocument | null> {
     return this.UserModel.findOne({ login });
   }
+  async findByEmail(email: string) {
+    return this.UserModel.findOne({ email }).exec();
+  }
   async loginIsExist(login: string): Promise<boolean> {
     return !!(await this.UserModel.countDocuments({ login: login }));
   }

@@ -29,7 +29,7 @@ export class AuthController {
   ) {}
 
   @Post('registration')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  //@HttpCode(HttpStatus.NO_CONTENT)
   registration(@Body() body: CreateUserInputDto): Promise<void> {
     return this.usersService.registerUser(body);
   }

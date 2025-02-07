@@ -18,15 +18,28 @@ export class UsersService {
     private emailService: EmailService,
     private cryptoService: CryptoService,
   ) {}
+  async isLoginTaken(login: string): Promise<boolean> {
+    return this.usersRepository.loginIsExist(login);
+  }
   async createUser(dto: CreateUserDto) {
     const userWithTheSameLogin = await this.usersRepository.findByLogin(
       dto.login,
     );
-    if (!!userWithTheSameLogin) {
+    if (userWithTheSameLogin) {
       throw BadRequestDomainException.create(
         'User with the same login already exists',
       );
     }
+
+    const userWithTheSameEmail = await this.usersRepository.findByEmail(
+      dto.email,
+    );
+    if (userWithTheSameEmail) {
+      throw BadRequestDomainException.create(
+        'User with the same email already exists',
+      );
+    }
+
     const passwordHash = await this.cryptoService.createPasswordHash(
       dto.password,
     );
@@ -34,10 +47,17 @@ export class UsersService {
     const user = this.UserModel.createInstance({
       email: dto.email,
       login: dto.login,
-      passwordHash: passwordHash,
+      passwordHash,
     });
 
-    await this.usersRepository.save(user);
+    try {
+      await this.usersRepository.save(user);
+    } catch (error) {
+      if (error.code === 11000) {
+        throw BadRequestDomainException.create('Duplicate login or email');
+      }
+      throw error; // если ошибка не связана с уникальностью, выбрасываем дальше
+    }
 
     return user._id;
   }

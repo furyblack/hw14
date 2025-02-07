@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersRepository } from '../infrastructure/users.repository';
 import { JwtService } from '@nestjs/jwt';
 import { CryptoService } from './crypto.service';
 import { UserContextDto } from '../guards/dto/user-context.dto';
+import { UsersService } from './users.service';
+import { CreateUserDto } from '../dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -10,6 +12,7 @@ export class AuthService {
     private usersRepository: UsersRepository,
     private jwtService: JwtService,
     private cryptoService: CryptoService,
+    readonly usersService: UsersService,
   ) {}
 
   async validateUser(
@@ -39,5 +42,13 @@ export class AuthService {
     return {
       accessToken,
     };
+  }
+  async register(dto: CreateUserDto) {
+    const loginExists = await this.usersService.isLoginTaken(dto.login);
+    if (loginExists) {
+      throw new BadRequestException('Login already exists');
+    }
+
+    return this.usersService.createUser(dto);
   }
 }
