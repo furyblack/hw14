@@ -19,6 +19,8 @@ import { MeViewDto } from './view-dto/users.view-dto';
 import { LocalAuthGuard } from '../guards/local/local-auth.guard';
 import { JwtOptionalAuthGuard } from '../guards/bearer/jwt-optional-auth.guard';
 import { ExtractUserIfExistsFromRequest } from '../guards/decorators/param/extract-user-if-exists-from-request.decorator';
+import { ConfirmRegistrationDto } from '../dto/confirm-registration-dto';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -37,16 +39,6 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
-  //swagger doc
-  // @ApiBody({
-  //   schema: {
-  //     type: 'object',
-  //     properties: {
-  //       login: { type: 'string', example: 'login123' },
-  //       password: { type: 'string', example: 'superpassword' },
-  //     },
-  //   },
-  // })
   async login(
     /*@Request() req: any*/
     @ExtractUserFromRequest() user: UserContextDto,
@@ -57,7 +49,7 @@ export class AuthController {
   @ApiBearerAuth()
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  me(@ExtractUserFromRequest() user: UserContextDto): Promise<MeViewDto> {
+  async me(@ExtractUserFromRequest() user: UserContextDto): Promise<MeViewDto> {
     return this.authQueryRepository.me(user.id);
   }
 
@@ -78,5 +70,13 @@ export class AuthController {
         //lastName: null,
       };
     }
+  }
+  @UseGuards(ThrottlerGuard)
+  @Post('registration-confirmation')
+  @HttpCode(HttpStatus.NO_CONTENT) // 204 при успешном подтверждении
+  async confirmRegistration(
+    @Body() dto: ConfirmRegistrationDto,
+  ): Promise<void> {
+    await this.authService.confirmRegistration(dto.code);
   }
 }

@@ -51,4 +51,38 @@ export class AuthService {
 
     return this.usersService.createUser(dto);
   }
+  async confirmRegistration(code: string): Promise<void> {
+    const user = await this.usersRepository.findByConfirmationCode(code);
+
+    if (!user) {
+      throw new BadRequestException({
+        errorsMessages: [
+          { message: 'Invalid confirmation code', field: 'code' },
+        ],
+      });
+    }
+
+    if (user.isEmailConfirmed) {
+      throw new BadRequestException({
+        errorsMessages: [{ message: 'User already confirmed', field: 'code' }],
+      });
+    }
+
+    if (
+      user.confirmationCodeExpiration &&
+      user.confirmationCodeExpiration < new Date()
+    ) {
+      throw new BadRequestException({
+        errorsMessages: [
+          { message: 'Confirmation code expired', field: 'code' },
+        ],
+      });
+    }
+
+    user.isEmailConfirmed = true;
+    user.confirmationCode = null; // Теперь это допустимо, так как confirmationCode может быть строкой или null
+    user.confirmationCodeExpiration = null; // То же самое для confirmationCodeExpiration
+
+    await user.save();
+  }
 }

@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UserAccountsModule } from './moduls/user-accounts/user-accounts.module';
 import { TestingModule } from './moduls/testing/testing.module';
 import { BloggerPlatformModule } from './moduls/bloggers-platform/bloggers-platform.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -15,6 +16,12 @@ import { BloggerPlatformModule } from './moduls/bloggers-platform/bloggers-platf
     UserAccountsModule,
     TestingModule,
     BloggerPlatformModule,
+    ThrottlerModule.forRoot([
+      {
+        ttl: 10000,
+        limit: 5,
+      },
+    ]),
   ],
   controllers: [AppController],
   providers: [AppService],
