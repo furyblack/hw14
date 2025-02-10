@@ -5,9 +5,12 @@ import { EmailService } from './email.service';
 @Module({
   imports: [
     MailerModule.forRoot({
-      transport: 'smtps://user@domain.com:pass@smtp.domain.com',
-      defaults: {
-        from: '"nest-modules" <modules@nestjs.com>',
+      transport: {
+        host: 'smtp.mail.ru',
+        auth: {
+          user: 'miha25-2010@mail.ru', // Ваш email sergeev.miha@internet.ru
+          pass: '5ZxK2mBji7EuM3yAxTeM', // Ваш пароль от email  simplepass11
+        },
       },
     }),
   ],

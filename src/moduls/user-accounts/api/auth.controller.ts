@@ -30,8 +30,9 @@ export class AuthController {
     private authQueryRepository: AuthQueryRepository,
   ) {}
 
+  @UseGuards(ThrottlerGuard)
   @Post('registration')
-  //@HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.NO_CONTENT)
   registration(@Body() body: CreateUserInputDto): Promise<void> {
     return this.usersService.registerUser(body);
   }

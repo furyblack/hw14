@@ -43,6 +43,7 @@ import { SecurityDevicesController } from './api/security-devices.controller';
     CryptoService,
     JwtStrategy,
   ],
+
   exports: [
     UsersRepository,
     MongooseModule,
