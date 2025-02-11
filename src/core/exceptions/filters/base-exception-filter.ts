@@ -10,6 +10,9 @@ export type HttpResponseBody = {
   extensions: ErrorExtension[];
   code: DomainExceptionCode | null;
 };
+export type HttpResponseBodyForOther = {
+  errorsMessages: { message: string; field: string }[];
+};
 
 export abstract class BaseExceptionFilter implements ExceptionFilter {
   abstract onCatch(exception: any, response: Response, request: Request): void;
