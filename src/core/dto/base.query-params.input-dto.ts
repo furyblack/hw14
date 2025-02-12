@@ -1,10 +1,13 @@
 //базовый класс для query параметров с пагинацией
 //значения по-умолчанию применятся автоматически при настройке глобального ValidationPipe в main.ts
 import { Type } from 'class-transformer';
+import { IsNumber } from 'class-validator';
 class PaginationParams {
   //для трансформации в number
   @Type(() => Number)
+  @IsNumber()
   pageNumber: number = 1;
+  @IsNumber()
   @Type(() => Number)
   pageSize: number = 10;
 

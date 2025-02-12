@@ -37,3 +37,25 @@ export class ObjectIdValidationPipe implements PipeTransform {
     return value;
   }
 }
+// @Injectable()
+// export class ValidationPipeForOther {
+//   new ValidationPipe({
+//     stopAtFirstError: false,
+//     exceptionFactory: (errors) => {
+//       const errorsForResponse = [];
+//
+//       errors.forEach((e) => {
+//         // @ts-ignore
+//         const constraintsKeys = Object.keys(e.constraints);
+//         constraintsKeys.forEach((constraintsKey) => {
+//           // @ts-ignore
+//           errorsForResponse.push({
+//             message: e.constraints![constraintsKey],
+//             field: e.property,
+//           });
+//         });
+//       });
+//       throw new BadRequestDomainException(errorsForResponse);
+//     },
+//   }),
+// }
