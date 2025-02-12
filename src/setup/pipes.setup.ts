@@ -9,7 +9,6 @@ export function pipesSetup(app: INestApplication) {
       stopAtFirstError: true,
       transform: true,
       exceptionFactory: (errors) => {
-        console.log(123);
         const errorsForResponse = [];
         errors.forEach((e) => {
           // @ts-ignore
@@ -22,9 +21,6 @@ export function pipesSetup(app: INestApplication) {
             });
           });
         });
-        console.log('+++++++++++++++++++++++++++++++++++++++++');
-        console.log(errorsForResponse);
-        console.log('+++++++++++++++++++++++++++++++++++++++++');
         throw new BadRequestDomainException(errorsForResponse);
       },
     }),
