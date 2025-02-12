@@ -1,6 +1,6 @@
 import { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { DomainException, ErrorExtension } from '../domain-exceptions';
+import { ErrorExtension } from '../domain-exceptions';
 import { DomainExceptionCode } from '../domain-exception-codes';
 
 export type HttpResponseBody = {
@@ -25,14 +25,17 @@ export abstract class BaseExceptionFilter implements ExceptionFilter {
     this.onCatch(exception, response, request);
   }
 
-  getDefaultHttpBody(url: string, exception: unknown): HttpResponseBody {
+  getDefaultHttpBody(
+    url: string,
+    exception: unknown,
+  ): HttpResponseBodyForOther {
+    const extensions = (exception as any).extensions || [];
+    console.log('gggg', extensions);
     return {
-      timestamp: new Date().toISOString(),
-      path: url,
-      message: (exception as any).message || 'Internal server error',
-      code: exception instanceof DomainException ? exception.code : null,
-      extensions:
-        exception instanceof DomainException ? exception.extensions : [],
+      errorsMessages: extensions.map((ext: ErrorExtension) => ({
+        message: ext.message,
+        field: ext.key || 'unknown',
+      })),
     };
   }
 }

@@ -13,7 +13,10 @@ export class ObjectIdValidationTransformationPipe implements PipeTransform {
     }
 
     if (!isValidObjectId(value)) {
-      throw BadRequestDomainException.create(`Invalid ObjectId: ${value}`);
+      throw BadRequestDomainException.create(
+        `Invalid ObjectId: ${value}`,
+        'id',
+      );
     }
     return new Types.ObjectId(value); // Преобразуем строку в ObjectId
 
@@ -30,32 +33,13 @@ export class ObjectIdValidationPipe implements PipeTransform {
     // Проверяем, что тип данных в декораторе — ObjectId
 
     if (!isValidObjectId(value)) {
-      throw BadRequestDomainException.create(`Invalid ObjectId: ${value}`);
+      throw BadRequestDomainException.create(
+        `Invalid ObjectId: ${value}`,
+        'id',
+      );
     }
 
     // Если тип не ObjectId, возвращаем значение без изменений
     return value;
   }
 }
-// @Injectable()
-// export class ValidationPipeForOther {
-//   new ValidationPipe({
-//     stopAtFirstError: false,
-//     exceptionFactory: (errors) => {
-//       const errorsForResponse = [];
-//
-//       errors.forEach((e) => {
-//         // @ts-ignore
-//         const constraintsKeys = Object.keys(e.constraints);
-//         constraintsKeys.forEach((constraintsKey) => {
-//           // @ts-ignore
-//           errorsForResponse.push({
-//             message: e.constraints![constraintsKey],
-//             field: e.property,
-//           });
-//         });
-//       });
-//       throw new BadRequestDomainException(errorsForResponse);
-//     },
-//   }),
-// }

@@ -18,10 +18,13 @@ export function pipesSetup(app: INestApplication) {
             // @ts-ignore
             errorsForResponse.push({
               message: e.constraints![constraintsKey],
-              field: e.property,
+              key: e.property,
             });
           });
         });
+        console.log('+++++++++++++++++++++++++++++++++++++++++');
+        console.log(errorsForResponse);
+        console.log('+++++++++++++++++++++++++++++++++++++++++');
         throw new BadRequestDomainException(errorsForResponse);
       },
     }),

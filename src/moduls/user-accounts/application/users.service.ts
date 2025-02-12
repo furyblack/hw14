@@ -28,6 +28,7 @@ export class UsersService {
     if (userWithTheSameLogin) {
       throw BadRequestDomainException.create(
         'User with the same login already exists',
+        'login',
       );
     }
 
@@ -37,6 +38,7 @@ export class UsersService {
     if (userWithTheSameEmail) {
       throw BadRequestDomainException.create(
         'User with the same email already exists',
+        'email',
       );
     }
 
@@ -54,7 +56,10 @@ export class UsersService {
       await this.usersRepository.save(user);
     } catch (error) {
       if (error.code === 11000) {
-        throw BadRequestDomainException.create('Duplicate login or email');
+        throw BadRequestDomainException.create(
+          'Duplicate login or email',
+          'id',
+        );
       }
       throw error; // если ошибка не связана с уникальностью, выбрасываем дальше
     }

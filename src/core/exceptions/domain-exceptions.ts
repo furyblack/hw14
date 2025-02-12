@@ -29,7 +29,7 @@ function ConcreteDomainExceptionFactory(
     }
 
     static create(message?: string, key?: string) {
-      return new this(message ? [new ErrorExtension(message, key)] : []);
+      return new this(message && key ? [new ErrorExtension(message, key)] : []);
     }
   };
 }
