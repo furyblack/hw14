@@ -6,6 +6,7 @@ import { UserContextDto } from '../guards/dto/user-context.dto';
 import { UsersService } from './users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { EmailService } from '../../notifications/email.service';
+import { BadRequestDomainException } from '../../../core/exceptions/domain-exceptions';
 
 @Injectable()
 export class AuthService {
@@ -57,28 +58,24 @@ export class AuthService {
     const user = await this.usersRepository.findByConfirmationCode(code);
 
     if (!user) {
-      throw new BadRequestException({
-        errorsMessages: [
-          { message: 'Invalid confirmation code', field: 'code' },
-        ],
-      });
+      throw new BadRequestDomainException([
+        { message: 'Invalid confirmation code', key: 'code' },
+      ]);
     }
 
     if (user.isEmailConfirmed) {
-      throw new BadRequestException({
-        errorsMessages: [{ message: 'User already confirmed', field: 'code' }],
-      });
+      throw new BadRequestDomainException([
+        { message: 'User already confirmed', key: 'code' },
+      ]);
     }
 
     if (
       user.confirmationCodeExpiration &&
       user.confirmationCodeExpiration < new Date()
     ) {
-      throw new BadRequestException({
-        errorsMessages: [
-          { message: 'Confirmation code expired', field: 'code' },
-        ],
-      });
+      throw new BadRequestDomainException([
+        { message: 'Confirmation code expired', key: 'code' },
+      ]);
     }
 
     user.isEmailConfirmed = true;
@@ -90,31 +87,32 @@ export class AuthService {
 
   async passwordRecovery(email: string): Promise<void> {
     const user = await this.usersRepository.findByEmail(email);
+
     if (!user) {
-      throw new BadRequestException({
-        errorsMessages: [{ message: 'Such user not found', field: 'email' }],
-      });
+      throw new BadRequestDomainException([
+        { message: 'Such user not found', key: 'email' },
+      ]);
     }
   }
 
   async emailResending(email: string): Promise<void> {
     const user = await this.usersRepository.findByEmail(email);
     if (!user) {
-      throw new BadRequestException({
-        errorsMessages: [{ message: 'Such user not found', field: 'email' }],
-      });
+      throw new BadRequestDomainException([
+        { message: 'Such user not found', key: 'email' },
+      ]);
     }
     if (user.isEmailConfirmed) {
-      throw new BadRequestException({
-        errorsMessages: [{ message: 'User already confirmed', field: 'code' }],
-      });
+      throw new BadRequestDomainException([
+        { message: 'User already confirmed', key: 'email' },
+      ]);
     }
 
     const newconfirmCode = 'newuuid';
 
     user.setConfirmationCode(newconfirmCode);
     await this.usersRepository.save(user);
-    this.emailService
+    await this.emailService
       .sendConfirmationEmail(user.email, newconfirmCode)
       .catch(console.error);
   }

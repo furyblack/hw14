@@ -19,6 +19,7 @@ export abstract class BaseExceptionFilter implements ExceptionFilter {
 
   getDefaultHttpBody(url: string, exception: unknown): HttpResponseBody {
     const extensions = (exception as any).extensions || [];
+
     return {
       errorsMessages: extensions.map((ext: ErrorExtension) => ({
         message: ext.message,

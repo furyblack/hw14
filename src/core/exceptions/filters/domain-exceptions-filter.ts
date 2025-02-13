@@ -18,7 +18,6 @@ export class DomainExceptionsFilter extends BaseExceptionFilter {
   }
 
   calculateHttpCode(exception: DomainException) {
-    console.log('domain filter', exception);
     switch (exception.code) {
       case DomainExceptionCode.BadRequest: {
         return HttpStatus.BAD_REQUEST;
