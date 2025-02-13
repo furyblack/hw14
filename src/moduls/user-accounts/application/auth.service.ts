@@ -5,6 +5,7 @@ import { CryptoService } from './crypto.service';
 import { UserContextDto } from '../guards/dto/user-context.dto';
 import { UsersService } from './users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
+import { EmailService } from '../../notifications/email.service';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
     private jwtService: JwtService,
     private cryptoService: CryptoService,
     readonly usersService: UsersService,
+    private emailService: EmailService,
   ) {}
 
   async validateUser(
@@ -93,5 +95,27 @@ export class AuthService {
         errorsMessages: [{ message: 'Such user not found', field: 'email' }],
       });
     }
+  }
+
+  async emailResending(email: string): Promise<void> {
+    const user = await this.usersRepository.findByEmail(email);
+    if (!user) {
+      throw new BadRequestException({
+        errorsMessages: [{ message: 'Such user not found', field: 'email' }],
+      });
+    }
+    if (user.isEmailConfirmed) {
+      throw new BadRequestException({
+        errorsMessages: [{ message: 'User already confirmed', field: 'code' }],
+      });
+    }
+
+    const newconfirmCode = 'newuuid';
+
+    user.setConfirmationCode(newconfirmCode);
+    await this.usersRepository.save(user);
+    this.emailService
+      .sendConfirmationEmail(user.email, newconfirmCode)
+      .catch(console.error);
   }
 }

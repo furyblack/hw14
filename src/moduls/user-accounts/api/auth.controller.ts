@@ -88,4 +88,10 @@ export class AuthController {
   async passwordRecovery(@Body() dto: PasswordRecoveryDto): Promise<void> {
     await this.authService.passwordRecovery(dto.email);
   }
+  @UseGuards(ThrottlerGuard)
+  @Post('registration-email-resending')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async emailResending(@Body() dto: PasswordRecoveryDto): Promise<void> {
+    await this.authService.emailResending(dto.email);
+  }
 }
