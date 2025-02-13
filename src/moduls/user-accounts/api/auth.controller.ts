@@ -19,7 +19,10 @@ import { MeViewDto } from './view-dto/users.view-dto';
 import { LocalAuthGuard } from '../guards/local/local-auth.guard';
 import { JwtOptionalAuthGuard } from '../guards/bearer/jwt-optional-auth.guard';
 import { ExtractUserIfExistsFromRequest } from '../guards/decorators/param/extract-user-if-exists-from-request.decorator';
-import { ConfirmRegistrationDto } from '../dto/confirm-registration-dto';
+import {
+  ConfirmRegistrationDto,
+  PasswordRecoveryDto,
+} from '../dto/confirm-registration-dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('auth')
@@ -67,8 +70,6 @@ export class AuthController {
         login: 'anonymous',
         userId: null,
         email: null,
-        //firstName: null,
-        //lastName: null,
       };
     }
   }
@@ -79,5 +80,12 @@ export class AuthController {
     @Body() dto: ConfirmRegistrationDto,
   ): Promise<void> {
     await this.authService.confirmRegistration(dto.code);
+  }
+
+  @UseGuards(ThrottlerGuard)
+  @Post('password-recovery')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async passwordRecovery(@Body() dto: PasswordRecoveryDto): Promise<void> {
+    await this.authService.passwordRecovery(dto.email);
   }
 }

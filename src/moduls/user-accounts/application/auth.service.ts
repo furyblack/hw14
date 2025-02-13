@@ -85,4 +85,13 @@ export class AuthService {
 
     await user.save();
   }
+
+  async passwordRecovery(email: string): Promise<void> {
+    const user = await this.usersRepository.findByEmail(email);
+    if (!user) {
+      throw new BadRequestException({
+        errorsMessages: [{ message: 'Such user not found', field: 'email' }],
+      });
+    }
+  }
 }

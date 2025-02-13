@@ -9,7 +9,6 @@ import { DomainExceptionsFilter } from './domain-exceptions-filter';
 export class AllExceptionsFilter extends BaseExceptionFilter {
   onCatch(exception: unknown, response: Response, request: Request): void {
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    console.log(exception);
     if (exception instanceof HttpException) {
       status = exception.getStatus();
     } else if (exception instanceof DomainException) {
