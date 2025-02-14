@@ -26,6 +26,7 @@ describe('posts', () => {
         }),
       );
     });
+
     app = result.app;
     blogTestManager = result.blogTestManager;
     postTestManager = result.postTestManager;

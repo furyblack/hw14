@@ -23,6 +23,7 @@ describe('blogs', () => {
         }),
       );
     });
+
     app = result.app;
     blogTestManager = result.blogTestManager;
   });
