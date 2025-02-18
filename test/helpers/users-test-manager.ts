@@ -16,6 +16,7 @@ export class UsersTestManager {
       .expect(statusCode);
     return response.body;
   }
+
   async createSeveralUsers(count: number): Promise<UserViewDto[]> {
     const usersPromises = [] as Promise<UserViewDto>[];
 

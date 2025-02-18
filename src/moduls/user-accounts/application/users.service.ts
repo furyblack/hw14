@@ -67,16 +67,6 @@ export class UsersService {
     return user._id;
   }
 
-  // async updateUser(id: string, dto: UpdateUserDto): Promise<string> {
-  //   const user = await this.usersRepository.findOrNotFoundFail(id);
-  //
-  //   user.update(dto);
-  //
-  //   await this.usersRepository.save(user);
-  //
-  //   return user._id.toString();
-  // }
-
   async deleteUser(id: string) {
     const user = await this.usersRepository.findOrNotFoundFail(
       new Types.ObjectId(id),

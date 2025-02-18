@@ -19,7 +19,6 @@ export class ObjectIdValidationTransformationPipe implements PipeTransform {
       );
     }
     return new Types.ObjectId(value); // Преобразуем строку в ObjectId
-
     // Если тип не ObjectId, возвращаем значение без изменений
   }
 }
@@ -38,7 +37,6 @@ export class ObjectIdValidationPipe implements PipeTransform {
         'id',
       );
     }
-
     // Если тип не ObjectId, возвращаем значение без изменений
     return value;
   }
