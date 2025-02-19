@@ -12,6 +12,7 @@ export class UsersTestManager {
   ): Promise<UserViewDto> {
     const response = await request(this.app.getHttpServer())
       .post('/api/users')
+      .auth('admin', 'qwerty')
       .send(createModel)
       .expect(statusCode);
     return response.body;
@@ -19,7 +20,6 @@ export class UsersTestManager {
 
   async createSeveralUsers(count: number): Promise<UserViewDto[]> {
     const usersPromises = [] as Promise<UserViewDto>[];
-
     for (let i = 0; i < count; ++i) {
       await delay(50);
       const response = this.createUser({
@@ -31,17 +31,12 @@ export class UsersTestManager {
     }
     return Promise.all(usersPromises);
   }
-  // async getUserById(
-  //   id: string,
-  //   statusCode: number = HttpStatus.OK,
-  // ): Promise<UserViewDto> {
-  //   const response = await request(this.app.getHttpServer())
-  //     .get(`/api/users/${id}`)
-  //     .expect(statusCode);
-  //   return response.body;
-  // }
+
   async deleteUser(id: string) {
     const server = this.app.getHttpServer(); // получаем сервер для тестов
-    await request(server).delete(`/api/users/${id}`).expect(204);
+    await request(server)
+      .delete(`/api/users/${id}`)
+      .auth('admin', 'qwerty')
+      .expect(204);
   }
 }

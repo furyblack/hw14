@@ -9,6 +9,8 @@ import { PaginatedViewDto } from '../src/core/dto/base.paginated.view-dto';
 import { UserViewDto } from '../src/moduls/user-accounts/api/view-dto/users.view-dto';
 
 describe('users', () => {
+  // const basicAuthHeader =
+  //   'Basic ' + Buffer.from('admin:qwerty').toString('base64');
   let app: INestApplication;
   let userTestManger: UsersTestManager;
   beforeAll(async () => {
@@ -33,7 +35,7 @@ describe('users', () => {
   });
   it('should create a new user', async () => {
     const body: CreateUserDto = {
-      login: 'name1',
+      login: 'admin',
       password: 'qwerty',
       email: 'email@email.em',
     };
@@ -74,6 +76,7 @@ describe('users', () => {
     const server = app.getHttpServer();
     await request(server)
       .get(`/api/users/${createdUser.id}`)
+      .auth('admin', 'qwerty')
       .expect(HttpStatus.NOT_FOUND);
   });
 });
