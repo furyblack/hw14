@@ -7,6 +7,7 @@ import { UsersTestManager } from './users-test-manager';
 import { deleteAllData } from './delete-all-data';
 import { BlogsTestManager } from './blogs-test-manager';
 import { PostsTestManager } from './posts-test-manager';
+import { AuthTestManager } from './auth-test-manager';
 
 export const initSettings = async (
   //передаем callback, который получает ModuleBuilder, если хотим изменить настройку тестового модуля
@@ -32,6 +33,7 @@ export const initSettings = async (
   const userTestManger = new UsersTestManager(app);
   const blogTestManager = new BlogsTestManager(app);
   const postTestManager = new PostsTestManager(app, blogTestManager);
+  const authTestManager = new AuthTestManager(app);
 
   await deleteAllData(app);
 
@@ -42,5 +44,6 @@ export const initSettings = async (
     userTestManger,
     blogTestManager,
     postTestManager,
+    authTestManager,
   };
 };

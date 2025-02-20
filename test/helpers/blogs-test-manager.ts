@@ -24,6 +24,7 @@ export class BlogsTestManager {
       const response = this.createBlog({
         name: 'string' + i,
         description: `string${i}`,
+
         websiteUrl:
           'https://p.7H1rV.DE-7hHrXZ9-ecNVheetttF66YKCJ_-gjJz1zDp0fQ6Yk1RCgUP00kPHQQ-ZuYOna0386PCmCt6VFpYShwgjX',
       });

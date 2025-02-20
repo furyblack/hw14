@@ -14,6 +14,7 @@ export class PostsTestManager {
     private app: INestApplication,
     private readonly blogTestManager: BlogsTestManager,
   ) {}
+
   async createPost(
     createModel: CreatePostDto,
     statusCode: number = HttpStatus.CREATED,
