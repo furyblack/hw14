@@ -27,17 +27,31 @@ describe('auth', () => {
   beforeEach(async () => {
     await deleteAllData(app);
   });
-  it('should registir new user', async () => {
-    const res = await request(app).post('/api/v1/users/register').send({
-      name: 'Test User',
+  // it('should registir new user', async () => {
+  //   const res = await request(app).post('/api/v1/users/register').send({
+  //     name: 'Test User',
+  //     email: 'test@example.com',
+  //     password: 'password123',
+  //   });
+  //
+  //   expect(res.statusCode).toBe(201);
+  //   expect(res.body.status).toBe('success');
+  //   expect(res.body.token).toBeDefined();
+  //   expect(res.body.data.user).toBeDefined();
+  //   expect(res.body.data.user.email).toBe('test@example.com');
+  // });
+  it('should register a new user', async () => {
+    const registerData = {
+      login: 'mihf',
       email: 'test@example.com',
-      password: 'password123',
-    });
+      password: 'Test1234!',
+    };
 
-    expect(res.statusCode).toBe(201);
-    expect(res.body.status).toBe('success');
-    expect(res.body.token).toBeDefined();
-    expect(res.body.data.user).toBeDefined();
-    expect(res.body.data.user.email).toBe('test@example.com');
+    const response = await authTestManager.registerUser(registerData);
+
+    expect(response).toEqual({
+      accessToken: expect.any(String),
+      refreshToken: expect.any(String),
+    });
   });
 });
