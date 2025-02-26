@@ -33,7 +33,6 @@ describe('auth', () => {
   //     email: 'test@example.com',
   //     password: 'password123',
   //   });
-  //
   //   expect(res.statusCode).toBe(201);
   //   expect(res.body.status).toBe('success');
   //   expect(res.body.token).toBeDefined();
