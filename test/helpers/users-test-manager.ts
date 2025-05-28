@@ -3,11 +3,6 @@ import { CreateUserInputDto } from '../../src/moduls/user-accounts/api/input-dto
 import { UserViewDto } from '../../src/moduls/user-accounts/api/view-dto/users.view-dto';
 import request from 'supertest';
 import { delay } from './delay';
-import {
-  User,
-  UserDocument,
-  UserModelType,
-} from '../../src/moduls/user-accounts/domain/user.entity';
 
 export class UsersTestManager {
   constructor(private app: INestApplication) {}
